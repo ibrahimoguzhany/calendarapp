@@ -1,0 +1,23 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/frontend/CalendarApp/node_modules
+/frontend/CalendarApp/.pnp
+/frontend/CalendarApp.pnp.js
+
+# testing
+/frontend/CalendarApp/coverage
+
+# production
+/frontend/CalendarApp/build
+
+# misc
+/frontend/CalendarApp.DS_Store
+/frontend/CalendarApp.env.local
+/frontend/CalendarApp.env.development.local
+/frontend/CalendarApp.env.test.local
+/frontend/CalendarApp.env.production.local
+
+/frontend/CalendarAppnpm-debug.log*
+/frontend/CalendarAppyarn-debug.log*
+/frontend/CalendarAppyarn-error.log*
