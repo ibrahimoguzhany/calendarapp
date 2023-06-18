@@ -1,97 +1,138 @@
-import React from 'react';
-import axios from 'axios';
-import { useState } from 'react';
-import { API_ROUTES, APP_ROUTES } from '../utils/constants';
-import { Link, useNavigate } from 'react-router-dom';
-import { useUser } from '../lib/customHooks';
-import { storeTokenInLocalStorage } from '../lib/common';
+import React from "react";
+import axios from "axios";
+import { useState } from "react";
+import { API_ROUTES, APP_ROUTES } from "../utils/constants";
+import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "../lib/customHooks";
+import { storeTokenInLocalStorage } from "../lib/common";
+import {
+  Button,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  Container,
+  Col,
+  FormFeedback,
+  Alert,
+} from "reactstrap";
+import { Spinner } from "reactstrap";
 
 const SignIn = () => {
   const navigate = useNavigate();
   const { user, authenticated } = useUser();
   if (user || authenticated) {
-    navigate(APP_ROUTES.DASHBOARD)
+    navigate(APP_ROUTES.CALENDAR);
   }
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const signIn = async () => {
+    setUsernameError("");
+    setPasswordError("");
+    setError("");
+    if (email.trim() === "") {
+      setUsernameError("E-posta adresi gereklidir");
+      return;
+    }
+
+    if (password.trim() === "") {
+      setPasswordError("Parola gereklidir");
+      return;
+    }
+
     try {
       setIsLoading(true);
       const response = await axios({
-        method: 'post',
-        url: API_ROUTES.SIGN_IN,
+        method: "post",
+        url: API_ROUTES.LOGIN,
         data: {
-          email,
-          password
-        }
+          UserNameOrEmail: email,
+          password,
+        },
       });
       if (!response?.data?.token) {
-        console.log('Something went wrong during signing in: ', response);
+        setError("Kullanıcı bulunamadı veya geçersiz kimlik bilgileri");
+        console.log("Giriş yapılırken bir sorun oluştu: ", response);
         return;
       }
       storeTokenInLocalStorage(response.data.token);
-      navigate(APP_ROUTES.DASHBOARD)
-    }
-    catch (err) {
-      console.log('Some error occured during signing in: ', err);
-    }
-    finally {
+      window.location = APP_ROUTES.CALENDAR;
+    } catch (err) {
+      setError("Giriş yaparken bir hata oluştu");
+      console.log("Giriş yaparken bir hata oluştu: ", err);
+    } finally {
       setIsLoading(false);
     }
   };
 
-
   return (
-    <div className="w-full h-screen flex justify-center items-center bg-gray-800">
-      <div className="w-1/2 h-1/2 shadow-lg rounded-md bg-white p-8 flex flex-col">
-        <h2 className="text-center font-medium text-2xl mb-4">
-          Sign in
-        </h2>
-        <div className="flex flex-1 flex-col justify-evenly">
-          <input
-            className="border-2 outline-none p-2 rounded-md"
-            type="email"
-            placeholder="Enter Your Email"
-            value={email}
-            onChange={(e) => { setEmail(e.target.value); }}
-          />
-          <input
-            className="border-2 outline-none p-2 rounded-md"
-            type="password"
-            placeholder="*******" value={password}
-            onChange={(e) => { setPassword(e.target.value); }}
-          />
-
-          <button
-            className="
-            flex justify-center
-            p-2 rounded-md w-1/2 self-center
-            bg-gray-800  text-white hover:bg-gray-800"
-            onClick={signIn}
-          >
-            {
-              isLoading ?
-                <div className="mr-2 w-5 h-5 border-l-2 rounded-full animate-spin" /> : null
-            }
-            <span>
-              SIGN IN
-            </span>
-          </button>
+    <Container className="vh-100 d-flex justify-content-center align-items-center">
+      <Col sm="12" md="6" lg="4" className="mx-auto">
+        <div className="shadow-lg rounded bg-white p-4 d-flex flex-column">
+          <h2 className="text-center font-weight-medium mb-4">Giriş Yap</h2>
+          <Form className="d-flex flex-column justify-content-around h-75">
+            <FormGroup>
+              <Label for="email" className="sr-only">
+                E-posta
+              </Label>
+              <Input
+                type="email"
+                name="email"
+                id="email"
+                placeholder="E-posta Adresinizi Girin"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="border rounded p-2"
+                invalid={!!usernameError}
+              />
+              <FormFeedback>{usernameError}</FormFeedback>
+            </FormGroup>
+            <FormGroup>
+              <Label for="password" className="sr-only">
+                Parola
+              </Label>
+              <Input
+                type="password"
+                name="password"
+                id="password"
+                placeholder="*******"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="border rounded p-2"
+                invalid={!!passwordError}
+              />
+              <FormFeedback>{passwordError}</FormFeedback>
+            </FormGroup>
+            {error && <Alert color="danger">{error}</Alert>}
+            <Button
+              color="dark"
+              onClick={signIn}
+              className="d-flex justify-content-center align-items-center mt-2"
+            >
+              {isLoading ? (
+                <Spinner size="sm" color="light" className="mr-2" />
+              ) : null}
+              <span>GİRİŞ YAP</span>
+            </Button>
+          </Form>
+          <div className="text-center small">
+            Hesabınız yok mu?
+            <Link to="/signup">
+              <span className="font-weight-medium text-dark ml-1">
+                Kaydolun
+              </span>
+            </Link>
+          </div>
         </div>
-        <div className="text-center text-sm">
-          Not a User?
-          <Link to="/signup">
-            <span className="font-medium text-gray-800 ml-1">
-              Sign Up
-            </span>
-          </Link>
-        </div>
-      </div>
-    </div >
+      </Col>
+    </Container>
   );
-}
+};
 
 export default SignIn;

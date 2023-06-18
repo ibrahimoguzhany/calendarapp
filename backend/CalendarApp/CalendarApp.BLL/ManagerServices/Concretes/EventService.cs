@@ -44,6 +44,7 @@ namespace CalendarApp.BLL.ManagerServices.Concretes
                                             EndDate = data.EndDate.Value,
                                             IsReminded = data.IsReminded,
                                             RemaningTime = data.RemaningTime,
+                                            CalendarId = data.CalendarId,
                                             UserId = _member.Claim.Id,
                                             IsActive = data.IsActive,
                                             CreatedBy = _member.Claim.UserName
@@ -148,6 +149,7 @@ namespace CalendarApp.BLL.ManagerServices.Concretes
                             EndDate = getEvent.EndDate,
                             IsReminded = getEvent.IsReminded,
                             RemaningTime = getEvent.RemaningTime,
+                            CalendarId = getEvent.CalendarId,
                             IsActive = getEvent.IsActive
                         };
 
@@ -197,6 +199,7 @@ namespace CalendarApp.BLL.ManagerServices.Concretes
                                         getEvent.EndDate = data.EndDate.Value;
                                         getEvent.IsReminded = data.IsReminded;
                                         getEvent.RemaningTime = data.RemaningTime;
+                                        getEvent.CalendarId = data.CalendarId;
                                         getEvent.IsActive = data.IsActive;
                                         getEvent.UpdatedBy = _member.Claim.UserName;
 

@@ -13,6 +13,8 @@ namespace CalendarApp.ENTITIES.DTOs
         public string Title { get; set; }
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
+        public int CalendarId { get; set; }
+        
         public bool IsReminded { get; set; }
         public int RemaningTime { get; set; }
         public bool IsActive { get; set; }

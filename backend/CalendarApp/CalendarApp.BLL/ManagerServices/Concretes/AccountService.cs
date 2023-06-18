@@ -63,7 +63,7 @@ namespace CalendarApp.BLL.ManagerServices.Concretes
                     Phone = data.Phone,
                     IdentityNumber = data.IdentityNumber,
                     Address = data.Address,
-                    RoleId = Guid.Parse("8AD2ACD8-0DAC-11EE-BE56-0242AC120002")
+                    RoleId = Guid.Parse("b939ba9c-0dcc-11ee-be56-0242ac120002")
                 };
 
                 UnitOfWork.Users.Add(newUser);
