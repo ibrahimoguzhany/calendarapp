@@ -70,7 +70,7 @@ namespace CalendarApp.DAL.Repositories.Concretes
 
         public List<T> GetActives()
         {
-            return Where(x => x.IsActive);
+            return Where(x => x.IsActive && !x.IsDelete);
         }
 
         public List<T> GetAll()

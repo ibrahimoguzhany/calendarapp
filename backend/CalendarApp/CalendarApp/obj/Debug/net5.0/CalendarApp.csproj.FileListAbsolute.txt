@@ -174,3 +174,13 @@ C:\Users\ibrah\Desktop\Projects\calendarapp\backend\CalendarApp\CalendarApp\obj\
 C:\Users\ibrah\Desktop\Projects\calendarapp\backend\CalendarApp\CalendarApp\obj\Debug\net5.0\CalendarApp.csproj.CopyComplete
 C:\Users\ibrah\Desktop\Projects\calendarapp\backend\CalendarApp\CalendarApp\obj\Debug\net5.0\CalendarApp.genruntimeconfig.cache
 C:\Users\ibrah\Desktop\Projects\calendarapp\backend\CalendarApp\CalendarApp\obj\Debug\net5.0\ref\CalendarApp.dll
+C:\Users\ibrah\Desktop\Projects\calendarapp\backend\CalendarApp\CalendarApp\bin\Debug\net5.0\Microsoft.AspNetCore.Connections.Abstractions.dll
+C:\Users\ibrah\Desktop\Projects\calendarapp\backend\CalendarApp\CalendarApp\bin\Debug\net5.0\Microsoft.AspNetCore.Http.Connections.Client.dll
+C:\Users\ibrah\Desktop\Projects\calendarapp\backend\CalendarApp\CalendarApp\bin\Debug\net5.0\Microsoft.AspNetCore.Http.Connections.Common.dll
+C:\Users\ibrah\Desktop\Projects\calendarapp\backend\CalendarApp\CalendarApp\bin\Debug\net5.0\Microsoft.AspNetCore.Http.Features.dll
+C:\Users\ibrah\Desktop\Projects\calendarapp\backend\CalendarApp\CalendarApp\bin\Debug\net5.0\Microsoft.AspNetCore.SignalR.Client.dll
+C:\Users\ibrah\Desktop\Projects\calendarapp\backend\CalendarApp\CalendarApp\bin\Debug\net5.0\Microsoft.AspNetCore.SignalR.Client.Core.dll
+C:\Users\ibrah\Desktop\Projects\calendarapp\backend\CalendarApp\CalendarApp\bin\Debug\net5.0\Microsoft.AspNetCore.SignalR.Common.dll
+C:\Users\ibrah\Desktop\Projects\calendarapp\backend\CalendarApp\CalendarApp\bin\Debug\net5.0\Microsoft.AspNetCore.SignalR.Protocols.Json.dll
+C:\Users\ibrah\Desktop\Projects\calendarapp\backend\CalendarApp\CalendarApp\bin\Debug\net5.0\Microsoft.Extensions.Primitives.dll
+C:\Users\ibrah\Desktop\Projects\calendarapp\backend\CalendarApp\CalendarApp\bin\Debug\net5.0\System.IO.Pipelines.dll

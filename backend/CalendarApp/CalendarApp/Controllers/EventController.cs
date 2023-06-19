@@ -1,8 +1,6 @@
 ﻿using CalendarApp.BLL.ManagerServices.Abstracts;
-using CalendarApp.BLL.ManagerServices.Concretes;
 using CalendarApp.COMMON.Results;
 using CalendarApp.ENTITIES.DTOs;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CalendarApp.Controllers
@@ -58,6 +56,7 @@ namespace CalendarApp.Controllers
                 return BadRequest(result);
             }
         }
+
         [HttpPost("UpdateEvent")]
         public IActionResult UpdateEvent(UpdateEventDto data)
         {
@@ -72,6 +71,7 @@ namespace CalendarApp.Controllers
                 return BadRequest(result);
             }
         }
+
         [HttpPost("DeleteEvent")]
         public IActionResult DeleteEvent(IdParam param)
         {

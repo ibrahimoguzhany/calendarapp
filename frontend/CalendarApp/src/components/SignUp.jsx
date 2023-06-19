@@ -64,7 +64,6 @@ const SignUp = () => {
   };
 
   const signUp = async () => {
-    console.log("form: ", form);
     setIsLoading(true);
     // find errors
     const newErrors = findFormErrors();
@@ -82,7 +81,6 @@ const SignUp = () => {
           url: API_ROUTES.REGISTER,
           data: form,
         });
-        console.log(form);
         if (!response?.data?.isSuccess) {
           console.log("Kayıt olurken bir sorun oluştu: ", response);
           return;

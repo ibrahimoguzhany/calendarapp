@@ -15,7 +15,6 @@ function App() {
         <Route exact path="/" element={<Navigate to={APP_ROUTES.CALENDAR} />} />
         <Route path={APP_ROUTES.SIGN_UP} exact element={<SignUp />} />
         <Route path={APP_ROUTES.SIGN_IN} element={<SignIn />} />
-        <Route path={APP_ROUTES.DASHBOARD} element={<Dashboard />} />
         <Route path={APP_ROUTES.CALENDAR} element={<Calendar />} />
       </Routes>
     </BrowserRouter>

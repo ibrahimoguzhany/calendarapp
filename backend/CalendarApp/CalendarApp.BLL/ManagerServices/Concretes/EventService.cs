@@ -6,7 +6,6 @@ using CalendarApp.ENTITIES.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CalendarApp.BLL.ManagerServices.Concretes
@@ -18,77 +17,48 @@ namespace CalendarApp.BLL.ManagerServices.Concretes
         {
             _tokenService = tokenService;
         }
-        public async Task<Result> AddEvent(EventDto data)
+        public async Task<DataResult<Guid>> AddEvent(EventDto data)
         {
-            Result result = new Result(false);
+            DataResult<Guid> result = new DataResult<Guid>(Guid.Empty, true);
             var _member = _tokenService.GetClaims();
-            if (_member.IsSuccess)
-            {
-                try
-                {
-                    if (!string.IsNullOrEmpty(data.Title))
-                    {
-                        if (data.StartDate.HasValue)
-                        {
-                            if (DateTimeOffset.Now < data.StartDate)
-                            {
-                                if (data.EndDate.HasValue)
-                                {
-                                    if(data.StartDate < data.EndDate)
-                                    {
-                                        EVENT newEvent = new EVENT
-                                        {
-                                            Description = data.Description,
-                                            Title = data.Title,
-                                            StartDate = data.StartDate.Value,
-                                            EndDate = data.EndDate.Value,
-                                            IsReminded = data.IsReminded,
-                                            RemaningTime = data.RemaningTime,
-                                            CalendarId = data.CalendarId,
-                                            UserId = _member.Claim.Id,
-                                            IsActive = data.IsActive,
-                                            CreatedBy = _member.Claim.UserName
-                                        };
-                                        UnitOfWork.Events.Add(newEvent);
-                                        await UnitOfWork.SaveAsync();
-                                        result.Message = "İşlem başarılı";
-                                        result.IsSuccess = true;
-                                    }
-                                    else
-                                    {
-                                        result.Message = "Bitiş tarihi başlangıç tarihinden ileri bir tarih olmalıdır";
-                                    }
-                                }
-                                else
-                                {
-                                    result.Message = "Bitiş tarihi giriniz";
-                                }
-                            }
-                            else
-                            {
-                                result.Message = "Önümüzdeki dönem için plan oluşturulabilir.";
-                            }
-                        }
-                        else
-                        {
-                            result.Message = "Başlangıç tarihi giriniz";
-                        }
-                    }
-                    else
-                    {
-                        result.Message = "Başlık alanı giriniz";
-                    }
-                }
-                catch (Exception ex)
-                {
-                    result.Message = ex.Message;
-                }
-            }
-            else
+            if (!_member.IsSuccess)
             {
                 result.Message = "Unauthorized";
+                return result;
+            }
+
+            try
+            {
+                ValidateData(data, result);
+                if (!result.IsSuccess)
+                {
+                    return result;
+                }
+
+                EVENT newEvent = new EVENT
+                {
+                    Title = data.Title,
+                    StartDate = data.StartDate.Value,
+                    EndDate = data.EndDate.Value,
+                    RemindDate = data.RemindDate.HasValue ? data.RemindDate.Value : null,
+                    CalendarId = data.CalendarId,
+                    UserId = _member.Claim.Id,
+                    IsActive = true,
+                    CreatedBy = _member.Claim.UserName
+                };
+                UnitOfWork.Events.Add(newEvent);
+                await UnitOfWork.SaveAsync();
+
+                result.Message = "İşlem başarılı";
+                result.IsSuccess = true;
+                result.Data = newEvent.Id;
+            }
+            catch (Exception ex)
+            {
+                result.Message = ex.Message;
             }
             return result;
+
         }
         public IDataResult<List<GetEventDto>> GetListEvent()
         {
@@ -109,7 +79,10 @@ namespace CalendarApp.BLL.ManagerServices.Concretes
                             {
                                 Id = getEvent.Id,
                                 Title = getEvent.Title,
-                                StartDate = getEvent.StartDate
+                                CalendarId = getEvent.CalendarId,
+                                StartDate = getEvent.StartDate,
+                                EndDate = getEvent.EndDate,
+                                RemindDate = getEvent.RemindDate,
                             });
                         }
 
@@ -143,14 +116,12 @@ namespace CalendarApp.BLL.ManagerServices.Concretes
                         eventResult = new GetEventById()
                         {
                             Id = getEvent.Id,
-                            Description = getEvent.Description,
                             Title = getEvent.Title,
                             StartDate = getEvent.StartDate,
                             EndDate = getEvent.EndDate,
-                            IsReminded = getEvent.IsReminded,
-                            RemaningTime = getEvent.RemaningTime,
+                            RemindDate = getEvent.RemindDate,
                             CalendarId = getEvent.CalendarId,
-                            IsActive = getEvent.IsActive
+                            IsActive = true
                         };
 
                         result.Data = eventResult;
@@ -177,70 +148,47 @@ namespace CalendarApp.BLL.ManagerServices.Concretes
         {
             Result result = new Result(false);
             var _member = _tokenService.GetClaims();
-            if (_member.IsSuccess)
-            {
-                try
-                {
-                    if (data.Id != Guid.Empty)
-                    {
-                        if (!string.IsNullOrEmpty(data.Title))
-                        {
-                            if (data.StartDate.HasValue)
-                            {
-                                if (data.EndDate.HasValue)
-                                {
-                                    var getEvent = UnitOfWork.Events.Find(data.Id);
-                                    if (getEvent != null)
-                                    {
-
-                                        getEvent.Description = data.Description;
-                                        getEvent.Title = data.Title;
-                                        getEvent.StartDate = data.StartDate.Value;
-                                        getEvent.EndDate = data.EndDate.Value;
-                                        getEvent.IsReminded = data.IsReminded;
-                                        getEvent.RemaningTime = data.RemaningTime;
-                                        getEvent.CalendarId = data.CalendarId;
-                                        getEvent.IsActive = data.IsActive;
-                                        getEvent.UpdatedBy = _member.Claim.UserName;
-
-                                        UnitOfWork.Events.Update(getEvent);
-                                        await UnitOfWork.SaveAsync();
-                                        result.Message = "İşlem başarılı";
-                                        result.IsSuccess = true;
-                                    }
-                                    else
-                                    {
-                                        result.Message = "Olay bulunamadı";
-                                    }
-                                }
-                                else
-                                {
-                                    result.Message = "Bitiş tarihi giriniz";
-                                }
-                            }
-                            else
-                            {
-                                result.Message = "Başlangıç tarihi giriniz";
-                            }
-                        }
-                        else
-                        {
-                            result.Message = "Başlık alanı giriniz";
-                        }
-                    }
-                    else
-                    {
-                        result.Message = "Olay seçiniz";
-                    }
-                }
-                catch (Exception ex)
-                {
-                    result.Message = ex.Message;
-                }
-            }
-            else
+            if (!_member.IsSuccess)
             {
                 result.Message = "Unauthorized";
+                return result;
+            }
+
+            try
+            {
+                ValidateUpdateData(data, result);
+                if (!result.IsSuccess)
+                {
+                    return result;
+                }
+
+                var getEvent = UnitOfWork.Events.Find(data.Id);
+
+                if (getEvent != null)
+                {
+                    getEvent.Title = data.Title;
+                    getEvent.StartDate = data.StartDate.Value;
+                    getEvent.EndDate = data.EndDate.Value;
+                    if (data.RemindDate != null)
+                    {
+                        getEvent.RemindDate = data.RemindDate.Value;
+                    }
+                    getEvent.CalendarId = data.CalendarId;
+                    getEvent.UpdatedBy = _member.Claim.UserName;
+
+                    UnitOfWork.Events.Update(getEvent);
+                    await UnitOfWork.SaveAsync();
+                    result.Message = "İşlem başarılı";
+                    result.IsSuccess = true;
+                }
+                else
+                {
+                    result.Message = "Olay bulunamadı";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Message = ex.Message;
             }
             return result;
         }
@@ -278,5 +226,52 @@ namespace CalendarApp.BLL.ManagerServices.Concretes
             }
             return result;
         }
+
+        #region Private Methods
+        private void ValidateData(EventDto data, Result result)
+        {
+            var validationList = new List<Func<string>>
+            {
+                () => string.IsNullOrEmpty(data.Title) ? "Başlık alanı giriniz" : null,
+                () => !data.StartDate.HasValue ? "Başlangıç tarihi giriniz" : null,
+                () => !data.EndDate.HasValue ? "Bitiş tarihi giriniz" : null,
+                () => data.StartDate >= data.EndDate ? "Bitiş tarihi başlangıç tarihinden ileri bir tarih olmalıdır" : null
+            };
+
+            foreach (var validation in validationList)
+            {
+                var message = validation.Invoke();
+                if (message != null)
+                {
+                    result.Message = message;
+                    return;
+                }
+            }
+
+            result.IsSuccess = true;
+        }
+        private void ValidateUpdateData(UpdateEventDto data, Result result)
+        {
+            var validationList = new List<Func<string>>
+            {
+                () => data.Id == Guid.Empty ? "Olay seçiniz" : null,
+                () => !data.StartDate.HasValue ? "Başlangıç tarihi giriniz" : null,
+                () => !data.EndDate.HasValue ? "Bitiş tarihi giriniz" : null,
+            };
+
+            foreach (var validation in validationList)
+            {
+                var message = validation.Invoke();
+                if (message != null)
+                {
+                    result.Message = message;
+                    return;
+                }
+            }
+
+            result.IsSuccess = true;
+        }
+        #endregion
+
     }
 }

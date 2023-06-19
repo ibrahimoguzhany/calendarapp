@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from 'axios';
+import axios from "axios";
 import { useUser } from "../lib/customHooks";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -13,30 +13,30 @@ import {
   Nav,
   NavItem,
 } from "reactstrap";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AppNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, authenticated } = useUser();
-  console.log("here",useUser(),);
+  const { authenticated } = useUser();
+
   const toggle = () => setIsOpen(!isOpen);
   let navigate = useNavigate();
 
   async function handleLogout() {
     try {
-        await axios.post(API_ROUTES.LOGOUT);
-
-        // Remove the token from localStorage
-        localStorage.removeItem('token');
-
-        // Redirect to login page
-        navigate(APP_ROUTES.SIGN_IN);
+      await axios.post(API_ROUTES.LOGOUT);
+      localStorage.removeItem("token");
+      navigate(APP_ROUTES.SIGN_IN);
+      toast.success("Çıkış Yapıldı");
     } catch (err) {
-        console.error('Logout failed:', err);
+      console.error("Logout failed:", err);
     }
-}
+  }
 
   return (
     <div>
+      <ToastContainer />
       <Navbar color="dark" dark expand="md">
         <NavbarBrand href="/" aria-label="Home">
           Takvim Uygulaması
@@ -66,7 +66,12 @@ const AppNavbar = () => {
 
             {authenticated && (
               <NavItem>
-                <Button to="/logout/" className="nav-link" aria-label="Log out" onClick={handleLogout}>
+                <Button
+                  to="/logout/"
+                  className="nav-link"
+                  aria-label="Log out"
+                  onClick={handleLogout}
+                >
                   Çıkış Yap
                 </Button>
               </NavItem>

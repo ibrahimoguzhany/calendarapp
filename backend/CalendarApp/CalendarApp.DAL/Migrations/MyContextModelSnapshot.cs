@@ -35,9 +35,6 @@ namespace CalendarApp.DAL.Migrations
                     b.Property<DateTimeOffset>("CreatedDate")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTimeOffset>("EndDate")
                         .HasColumnType("datetimeoffset");
 
@@ -47,11 +44,8 @@ namespace CalendarApp.DAL.Migrations
                     b.Property<bool>("IsDelete")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsReminded")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("RemaningTime")
-                        .HasColumnType("int");
+                    b.Property<DateTimeOffset?>("RemindDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset>("StartDate")
                         .HasColumnType("datetimeoffset");

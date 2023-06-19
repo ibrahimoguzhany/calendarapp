@@ -17,6 +17,11 @@ import {
   Alert,
 } from "reactstrap";
 import { Spinner } from "reactstrap";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+toast.configure();
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -62,7 +67,8 @@ const SignIn = () => {
         return;
       }
       storeTokenInLocalStorage(response.data.token);
-      window.location = APP_ROUTES.CALENDAR;
+      window.location.assign(APP_ROUTES.CALENDAR);
+      toast.success('Başarıyla oturum açıldı.');
     } catch (err) {
       setError("Giriş yaparken bir hata oluştu");
       console.log("Giriş yaparken bir hata oluştu: ", err);

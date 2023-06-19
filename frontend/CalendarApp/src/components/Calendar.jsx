@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import axios from 'axios';
+import axios from "axios";
 import "bootstrap/dist/css/bootstrap.css";
 import "./styles.css";
 import CustomTuiCalendar from "./CustomTuiCalendar";
@@ -8,47 +8,50 @@ import { useUser } from "../lib/customHooks";
 import { API_ROUTES } from "../utils/constants";
 import { getTokenFromLocalStorage } from "../lib/common";
 
+import NotificationComponent from "./Notification";
+
+
 const start = new Date();
 const end = new Date(new Date().setMinutes(start.getMinutes() + 60));
 
-const schedules = [
-  {
-    id: "1",
-    title: "İbrahimle Görüşme",
-    calendarId: "1",
-    category: "time",
-    isVisible: true,
-    start,
-    end,
-  },
-  {
-    id: "2",
-    title: "Oğuzhanla toplantı",
-    calendarId: "2",
-    category: "time",
-    isVisible: true,
-    start: new Date(new Date().setHours(start.getHours() + 1)),
-    end: new Date(new Date().setHours(start.getHours() + 2)),
-  },
-  {
-    id: "3",
-    title: "Cerenle gezi",
-    calendarId: "3",
-    category: "time",
-    isVisible: true,
-    start: new Date(new Date().setHours(start.getHours() + 2)),
-    end: new Date(new Date().setHours(start.getHours() + 4)),
-  },
-  {
-    id: "4",
-    title: "Barışla yemek",
-    calendarId: "4",
-    category: "time",
-    isVisible: true,
-    start: new Date(new Date().setHours(start.getHours() + 2)),
-    end: new Date(new Date().setHours(start.getHours() + 6)),
-  },
-];
+// const schedules = [
+//   {
+//     id: "1",
+//     title: "İbrahimle Görüşme",
+//     calendarId: "1",
+//     category: "time",
+//     isVisible: true,
+//     start,
+//     end,
+//   },
+//   {
+//     id: "2",
+//     title: "Oğuzhanla toplantı",
+//     calendarId: "2",
+//     category: "time",
+//     isVisible: true,
+//     start: new Date(new Date().setHours(start.getHours() + 1)),
+//     end: new Date(new Date().setHours(start.getHours() + 2)),
+//   },
+//   {
+//     id: "3",
+//     title: "Cerenle gezi",
+//     calendarId: "3",
+//     category: "time",
+//     isVisible: true,
+//     start: new Date(new Date().setHours(start.getHours() + 2)),
+//     end: new Date(new Date().setHours(start.getHours() + 4)),
+//   },
+//   {
+//     id: "4",
+//     title: "Barışla yemek",
+//     calendarId: "4",
+//     category: "time",
+//     isVisible: true,
+//     start: new Date(new Date().setHours(start.getHours() + 2)),
+//     end: new Date(new Date().setHours(start.getHours() + 6)),
+//   },
+// ];
 
 const colors = [
   {
@@ -137,31 +140,41 @@ export default function Calendar() {
   const { user, authenticated } = useUser();
   const [modal, setModal] = useState(false);
   const [event, setEvent] = useState(null);
-  const [data, setData] = useState(null);
+
+  const [schedules, setSchedules] = useState([]);
   const childRef = useRef();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = getTokenFromLocalStorage();  
+        const token = getTokenFromLocalStorage();
 
-        const response = await axios.get(API_ROUTES.GET_LIST_EVENT,{
-            headers: {
-              'Authorization': `Bearer ${token}`, 
-            }
-          });
-        setData(response.data);
+        const response = await axios.get(API_ROUTES.GET_LIST_EVENT, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setSchedules(
+          response.data.data.map((item) => {
+            return {
+              id: item.id,
+              title: item.title,
+              calendarId: item.calendarId,
+              category: "time",
+              isVisible: true,
+              start: new Date(item.startDate),
+              end: new Date(item.endDate),
+            };
+          })
+        );
       } catch (error) {
-        console.error('Error fetching data: ', error);
+        console.error("Error fetching data: ", error);
         // handle error
       }
     };
 
     fetchData();
-
-
-  },[]);
-
+  }, []);
   if (!user || !authenticated) {
     return (
       <div className="p-16 bg-gray-800 h-screen">
@@ -177,117 +190,121 @@ export default function Calendar() {
   };
 
   function onBeforeCreateSchedule(event) {
-    // console.log('onBeforeCreateSchedule', event)
     event.guide.clearGuideElement();
     setModal(true);
     setEvent(event);
   }
 
-  function handleCreateSchedule(newEvent) {
-    // call api
-    const result = true;
+  async function handleCreateSchedule(newEvent) {
+    const newSchedule = {
+      ...event,
+      id: schedules.length,
+      title: newEvent.title,
+      calendarId: newEvent.calendarId,
+      category: event.isAllDay ? "allday" : "time",
+      isVisible: true,
+      start: newEvent.start,
+      end: newEvent.end,
+      isAllDay: event.isAllDay,
+      dueDateClass: "",
+      location: event.location,
+      state: event.state,
+      body: event.body,
+    };
+    const data = {
+      title: newEvent.title,
+      calendarId: newEvent.calendarId,
+      startDate: newEvent.start,
+      endDate: newEvent.end,
+    };
 
-    if (result) {
-      const newSchedule = {
-        ...event,
-        id: schedules.length,
-        title: newEvent.title,
-        description: newEvent.description,
-        calendarId: newEvent.calendarId,
-        category: event.isAllDay ? "allday" : "time",
-        
-        isVisible: true,
-        start: newEvent.start,
-        end: newEvent.end,
-        remindDate: newEvent.remindDate,
-        isAllDay: event.isAllDay,
-        dueDateClass: "",
-        location: event.location,
-        // raw: {
-        //   class: event.raw["class"]
-        // },
-        state: event.state,
-        body: event.body,
-      };
-      console.log(newSchedule)
-      childRef.current.createSchedule(newSchedule);
-      setModal(false);
+    try {
+      const token = getTokenFromLocalStorage();
+
+      const response = await axios.post(API_ROUTES.ADD_EVENT, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data.isSuccess) {
+        childRef.current.createSchedule(newSchedule);
+        newSchedule.id = response.data.data.id;
+        window.location.reload();
+        setModal(false);
+      }
+    } catch (error) {
+      console.error("Error creating new schedule: ", error);
     }
   }
 
   function onBeforeUpdateSchedule(event) {
-    // console.log('onBeforeUpdateSchedule', event)
-
-    const { schedule, changes } = event;
-    console.log(event)
-    // resize & drag n drop
-    if (changes) {
-      // call api
-      const result = true;
-      if (result) {
-        return childRef.current.updateSchedule(schedule, changes);
-      }
-    }
-
     setModal(true);
     setEvent(event);
   }
 
   async function handleUpdateSchedule(updateEvent) {
     // call api
-    const result = true;
-
-    if (result) {
+    try {
+      const token = getTokenFromLocalStorage();
       const { schedule } = event;
-
-      // way 1: library not support
-      // update api fail with attendees
-      // childRef.current.updateSchedule(schedule, updateEvent)
-
-      // way 2: stupid
-      await childRef.current.deleteSchedule(schedule);
-
-      const newSchedule = {
-        ...event,
-        id: schedules.length + 2,
+      const data = {
+        id: schedule.id,
         title: updateEvent.title,
-        description: updateEvent.description,
         calendarId: updateEvent.calendarId,
-        category: "time",
-        isVisible: true,
-        start: updateEvent.start,
-        end: updateEvent.end,
-        remindDate: updateEvent.remindDate,
-        isAllDay: false,
-        dueDateClass: "",
-        location: event.location,
-        // raw: {
-        //   class: event.raw["class"]
-        // },
-        state: event.state,
-        body: event.body,
+        startDate: updateEvent.start,
+        endDate: updateEvent.end,
       };
+      const response = await axios.post(API_ROUTES.UPDATE_EVENT, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.data.isSuccess) {
+        await childRef.current.deleteSchedule(schedule);
+        const newSchedule = {
+          ...event,
+          id: schedule.id,
+          title: updateEvent.title,
+          calendarId: updateEvent.calendarId,
+          category: "time",
+          isVisible: true,
+          start: updateEvent.start,
+          end: updateEvent.end,
+          isAllDay: false,
+          dueDateClass: "",
+          location: event.location,
+          state: event.state,
+          body: event.body,
+        };
+        await childRef.current.createSchedule(newSchedule);
+        window.location.reload();
 
-      await childRef.current.createSchedule(newSchedule);
-
-      setModal(false);
+        setModal(false);
+      }
+    } catch (error) {
+      console.error("Error creating new schedule: ", error);
     }
   }
 
-  function onBeforeDeleteSchedule(event) {
-    // console.log('onBeforeDeleteSchedule', event)
-
-    // call api
-    const result = true;
-
-    if (result) {
+  async function onBeforeDeleteSchedule(event) {
+    const token = getTokenFromLocalStorage();
+    const { schedule } = event;
+    const response = await axios.post(
+      API_ROUTES.DELETE_EVENT,
+      { id: schedule.id },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.data.isSuccess) {
       const { schedule } = event;
       childRef.current.deleteSchedule(schedule);
     }
-
     return true;
   }
-
   const formatCalendars = calendars.map((element) => ({
     ...colors.find((element2) => element2.id === element.id),
     ...element,
@@ -295,6 +312,7 @@ export default function Calendar() {
 
   return (
     <div>
+      <NotificationComponent schedules={schedules} />
       <CustomTuiCalendar
         ref={childRef}
         {...{
@@ -302,11 +320,6 @@ export default function Calendar() {
           showSlidebar: false,
           showMenu: true,
           useCreationPopup: false,
-          // onCreate: () => {
-          //   console.log("create that!!!");
-          //   childRef.current.getAlert();
-          // },
-          // createText: "Tao moi",
           calendars: formatCalendars,
           schedules,
           onBeforeCreateSchedule,
@@ -322,9 +335,9 @@ export default function Calendar() {
             event?.triggerEventName === "mouseup"
               ? handleCreateSchedule
               : handleUpdateSchedule,
-          submitText: event?.triggerEventName === "mouseup" ? "Save" : "Update",
+          submitText:
+            event?.triggerEventName === "mouseup" ? "Kaydet" : "Güncelle",
           calendars: formatCalendars,
-          // attendees,
           schedule: event?.schedule,
           startDate: event?.start,
           endDate: event?.end,

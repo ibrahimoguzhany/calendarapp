@@ -1,6 +1,7 @@
 using CalendarApp.BLL.ManagerServices.Abstracts;
 using CalendarApp.BLL.ManagerServices.Concretes;
 using CalendarApp.BLL.ServiceInjection;
+using CalendarApp.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,6 +29,7 @@ namespace CalendarApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSignalR();
             services.AddCors(opt =>
             {
                 opt.AddDefaultPolicy(builder =>
@@ -95,6 +97,7 @@ namespace CalendarApp
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<RemindHub>("/remind");
             });
         }
     }

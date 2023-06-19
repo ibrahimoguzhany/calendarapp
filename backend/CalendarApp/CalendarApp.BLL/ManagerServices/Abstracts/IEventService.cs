@@ -10,7 +10,7 @@ namespace CalendarApp.BLL.ManagerServices.Abstracts
 {
     public interface IEventService
     {
-        Task<Result> AddEvent(EventDto data);
+        Task<DataResult<Guid>> AddEvent(EventDto data);
         IDataResult<List<GetEventDto>> GetListEvent();
         IDataResult<GetEventById> GetEventById(IdParam param);
         Task<Result> UpdateEvent(UpdateEventDto data);
