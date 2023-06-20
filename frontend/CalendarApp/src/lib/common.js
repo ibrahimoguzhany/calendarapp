@@ -22,14 +22,12 @@ export async function getAuthenticatedUser() {
         Authorization: `Bearer ${token}`
       }
     });
-    console.log("+>>",response.data);
     var res = response.data;
     if(!!response.data) {
       return { authenticated: true, user: res.data };
     }
   }
   catch (err) {
-    console.log('getAuthenticatedUser, Something Went Wrong', err);
     return defaultReturnObject;
   }
 }

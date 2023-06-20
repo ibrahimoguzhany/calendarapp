@@ -25,6 +25,5 @@ export const API_ROUTES = {
 export const APP_ROUTES = {
   SIGN_UP: '/signup',
   SIGN_IN: '/signin',
-  DASHBOARD: '/dashboard',
   CALENDAR: '/calendar',
 }

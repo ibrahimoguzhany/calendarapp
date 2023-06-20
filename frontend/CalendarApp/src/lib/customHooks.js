@@ -15,7 +15,6 @@ export function useUser() {
         navigate(APP_ROUTES.SIGN_IN);
         return;
       }
-      console.log(authenticated, user);
       setUser(user);
       setAutenticated(authenticated);
     }
