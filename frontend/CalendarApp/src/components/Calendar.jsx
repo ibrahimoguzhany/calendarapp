@@ -14,45 +14,6 @@ import NotificationComponent from "./Notification";
 const start = new Date();
 const end = new Date(new Date().setMinutes(start.getMinutes() + 60));
 
-// const schedules = [
-//   {
-//     id: "1",
-//     title: "İbrahimle Görüşme",
-//     calendarId: "1",
-//     category: "time",
-//     isVisible: true,
-//     start,
-//     end,
-//   },
-//   {
-//     id: "2",
-//     title: "Oğuzhanla toplantı",
-//     calendarId: "2",
-//     category: "time",
-//     isVisible: true,
-//     start: new Date(new Date().setHours(start.getHours() + 1)),
-//     end: new Date(new Date().setHours(start.getHours() + 2)),
-//   },
-//   {
-//     id: "3",
-//     title: "Cerenle gezi",
-//     calendarId: "3",
-//     category: "time",
-//     isVisible: true,
-//     start: new Date(new Date().setHours(start.getHours() + 2)),
-//     end: new Date(new Date().setHours(start.getHours() + 4)),
-//   },
-//   {
-//     id: "4",
-//     title: "Barışla yemek",
-//     calendarId: "4",
-//     category: "time",
-//     isVisible: true,
-//     start: new Date(new Date().setHours(start.getHours() + 2)),
-//     end: new Date(new Date().setHours(start.getHours() + 6)),
-//   },
-// ];
-
 const colors = [
   {
     id: "1",

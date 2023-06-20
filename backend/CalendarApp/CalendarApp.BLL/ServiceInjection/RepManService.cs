@@ -3,13 +3,7 @@ using CalendarApp.BLL.ManagerServices.Concretes;
 using CalendarApp.DAL.Repositories.Abstracts;
 using CalendarApp.DAL.Repositories.Concretes;
 using CalendarApp.DAL.UnitOfWorks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CalendarApp.BLL.ServiceInjection
 {
@@ -23,10 +17,9 @@ namespace CalendarApp.BLL.ServiceInjection
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IUserRefreshTokenRepository, UserRefreshTokenRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+
             //UnitOfWork
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserService, UserService>();

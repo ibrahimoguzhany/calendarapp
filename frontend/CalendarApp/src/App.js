@@ -4,7 +4,6 @@ import Calendar from './components/Calendar';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import { APP_ROUTES } from './utils/constants';
-import Dashboard from './components/Dashboard';
 import AppNavbar from "./components/AppNavbar";
 
 function App() {
